@@ -89,16 +89,11 @@ function playGame() {
 
 }
 
-console.log("Round 1")
-playRound(getplayerChoice(), getComputerChoice());
-console.log("Round 2")
-playRound(getplayerChoice(), getComputerChoice());
-console.log("Round 3")
-playRound(getplayerChoice(), getComputerChoice());
-console.log("Round 4")
-playRound(getplayerChoice(), getComputerChoice());
-console.log("Round 5")
-playRound(getplayerChoice(), getComputerChoice());
+let round = 1;
+while(round <= 5){
+    playRound(getplayerChoice(), getComputerChoice());
+    round++;
+}
 
  console.log("Player Score: " + playerScore);
     console.log("Computer Score: " + computerScore);
