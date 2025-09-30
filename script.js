@@ -2,111 +2,128 @@
 
 
 function getRandomInt() {
-    return Math.floor(Math.random() * 3) + 1; //returns the random integer between 1 - 3
+    return Math.floor(Math.random() * 3); //returns the random integer between 0 - 2
 }
 
 function getComputerChoice() {
-    let randomInt = getRandomInt(); //implementing computer choice based on random integer generated...
-    let computerChoice = "";
+    const computerChoice = ["ROCK", "PAPER", "SCISSORS"] // returns a computer choice based on the random integer returned by the getRandomInt()
+    const randomIndex = getRandomInt();
+    return computerChoice[randomIndex];
+}
 
-    if (randomInt == 1) {
-        computerChoice = "rock";
+//selcting the buttons using query selectors..
+
+const btnRock = document.querySelector('#rock')
+const btnPaper = document.querySelector('#paper')
+const btnScissors = document.querySelector('#scissors')
+const btnRestart = document.querySelector('#btnRestart')
+btnRestart.disabled = true;
+
+
+
+//selecting choice div and creating some html elements to show choice of player and computer
+
+const choiceDiv = document.querySelector('.choice');
+const results = document.querySelector('#result');
+const playerScore = document.querySelector('#playerScore');
+const computerScore = document.querySelector('#computerScore');
+
+const plrChoice = document.createElement('h2');
+const comChoice = document.createElement('h2');
+choiceDiv.appendChild(plrChoice);
+choiceDiv.appendChild(comChoice);
+
+//variables to keep track of score
+
+let plrScore = 0;
+let comScore = 0;
+
+//main function which decides the winner and looser of the game or round..by comparing choice entered by user and computer
+
+function playRound(playerChoice) {
+    const computerChoice = getComputerChoice();
+
+    plrChoice.textContent = "Player Choice: " + playerChoice;
+    comChoice.textContent = "Computer Choice: " + computerChoice;
+
+    let result = "";
+
+    if (playerChoice === computerChoice) {
+        result = "It's a DRAW..!"
     }
-    else if (randomInt == 2) {
-        computerChoice = "paper";
+    else if (
+        (playerChoice === "ROCK" && computerChoice === "SCISSORS") ||
+        (playerChoice === "PAPER" && computerChoice === "ROCK") ||
+        (playerChoice === "SCISSORS" && computerChoice === "PAPER")
+
+    ) {
+        result = `You Win! ${playerChoice} Beats ${computerChoice}`;
+        plrScore++;
     }
     else {
-        computerChoice = "scissor";
+        result = `You Loose! ${computerChoice} Beats ${playerChoice}`;
+        comScore++;
     }
-    console.log("Computer Choice: " + computerChoice.toUpperCase())
 
-    return randomInt;
+    return updateScore(result);
 
 }
 
-function getplayerChoice() {
-    let userInput = 0
-    let playerChoice = "";
+// function to show the actual output on the screen of score and the result 
 
-    userInput = parseInt(prompt("Enter your choice: 1: rock 2: paper 3: scissor")) //implementing player choice based on user input...
+function updateScore(result) {
+    playerScore.textContent = "Player Score: " + plrScore;
+    computerScore.textContent = "Computer Score: " + comScore;
+    results.textContent = "Result: " + result;
 
-    if (userInput == 1) {
-        playerChoice = "ROCK";
-    }
-    else if (userInput == 2) {
-        playerChoice = "PAPER";
-    }
-    else if (userInput == 3) {
-        playerChoice = "SCISSOR";
-    }
-    else {
-        playerChoice = "Invalid Input"
-    }
-    console.log("Player Choice: " + playerChoice)
+    if (plrScore === 5 || comScore === 5) {
+        if (plrScore > comScore) {
+            results.textContent = "Congratulations! You Win the game...";
+            results.style.color = "#34ac38ff";
+            disableButtons();
 
-    return userInput;
-}
-
-
-
-function playGame() {
-
-    let computerScore = 0;
-    let playerScore = 0;
-
-
-    function playRound(playerChoice, computerChoice) {
-
-    if (playerChoice == computerChoice) {
-        console.log("It's a DRAW...!");
-    }
-    else if (playerChoice == 1 && computerChoice == 2) {
-        console.log("You Loose! Paper Beats Rock...");
-        computerScore++;
-    }
-    else if (playerChoice == 1 && computerChoice == 3) {
-        console.log("You Win! Rock Beats Scissor...");
-        playerScore++;
-    }
-    else if (playerChoice == 2 && computerChoice == 1) {
-        console.log("You Win! Paper Beats Rock...");
-        playerScore++;
-    }
-    else if (playerChoice == 2 && computerChoice == 3) {
-        console.log("You Loose! Scissor Beats Paper...");
-        computerScore++;
-    }
-    else if (playerChoice == 3 && computerChoice == 1) {
-        console.log("You Loose! Rock Beats Scissor...");
-        computerScore++;
-    }
-    else if (playerChoice == 3 && computerChoice == 2) {
-        console.log("You Win! Scissor Beats Paper...");
-        playerScore++;
-    }
-
-   
-
-}
-
-let round = 1;
-while(round <= 5){
-    playRound(getplayerChoice(), getComputerChoice());
-    round++;
-}
-
- console.log("Player Score: " + playerScore);
-    console.log("Computer Score: " + computerScore);
-
-    if (playerScore > computerScore) {
-        console.log("You Win This Round..");
-    }
-    else if (computerScore == playerScore) {
-        console.log("It's a Draw..!")
-    }
-    else {
-        console.log("You lost this round...");
+        }
+        else {
+            results.textContent = "You Loose! Better luck next time...";
+            results.style.color = "#d41a1aff"
+            disableButtons();
+        }
     }
 }
 
-playGame();
+//function which disables the buttons after game is over..
+
+function disableButtons() {
+    btnRock.disabled = true;
+    btnPaper.disabled = true;
+    btnScissors.disabled = true;
+    btnRestart.disabled = false;
+    //  btnRestart.style.backgroundColor = "#4CAF50";
+}
+
+// function which restarts a new game from start..
+
+function restartGame() {
+    plrScore = 0;
+    comScore = 0;
+    plrChoice.textContent = "Player Choice: ";
+    comChoice.textContent = "Computer Choice: ";
+    playerScore.textContent = "Player Score: 0";
+    computerScore.textContent = "Computer Score: 0";
+    results.textContent = "";
+    results.style.color = "#333";
+
+    btnRock.disabled = false;
+    btnPaper.disabled = false;
+    btnScissors.disabled = false;
+    btnRestart.disabled = true;
+    // btnRestart.style.backgroundColor = "#a6a4a4";
+
+}
+
+// event listners which actually triggers the play round function on click 
+
+btnRock.addEventListener('click', () => playRound("ROCK"));
+btnPaper.addEventListener('click', () => playRound("PAPER"));
+btnScissors.addEventListener('click', () => playRound("SCISSORS"));
+btnRestart.addEventListener('click', () => restartGame());
